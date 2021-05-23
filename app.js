@@ -6,9 +6,10 @@ const PIPE_WIDTH = 40;
 const HOLE_HEIGHT = 110;
 const FPS = 60;
 
-const BALL_ACCELERATION = 1.5;
+const SPRITE_ACCELERATION = 1.2;
 let timeElapsed = 1;
-let ballVelocity = BALL_ACCELERATION*timeElapsed;
+let spriteVelocity = SPRITE_ACCELERATION*timeElapsed;
+let score = 0;
 
 const PIPE_VELOCITY = 5;
 const PIPE_SEPARATION = 350;
@@ -18,9 +19,12 @@ let pipe2X = pipe1X + PIPE_SEPARATION;
 let pipe3X = pipe2X + PIPE_SEPARATION;
 let pipe4X = pipe3X + PIPE_SEPARATION;
 
-let birdY = GAME_HEIGHT/2;
+let spriteX = 80;
+let spriteY = GAME_HEIGHT/2;
+let radius = 15;
 
 let spacePressed;
+let gameOn = true;
 
 let hole1Y, hole2Y, hole3Y, hole4Y;
 hole1Y = holeYGen();
@@ -64,8 +68,15 @@ const drawEverything = () =>{
     ctx.fillRect(pipe4X, hole4Y, PIPE_WIDTH, HOLE_HEIGHT); // Pipe4's hole
 
     // Making main character
-    ctx.fillStyle = "yellow";
-    ctx.fillRect(80, birdY, 30, 30)
+    ctx.beginPath();
+    ctx.arc(spriteX, spriteY, radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = '#bed93b';
+    ctx.fill();
+
+    // Scoreboard
+    ctx.fillStyle = 'white';
+    ctx.font = "30px Arial"
+    ctx.fillText(score/15, canvas.width / 2, 50)
 }
 
 const moveEverything = () => {
@@ -89,34 +100,89 @@ const moveEverything = () => {
         hole4Y = holeYGen();
     }
     // Adding gravity
-    birdY += ballVelocity;
-    // Moves the bird up for 150ms when space is pressed
+    spriteY += spriteVelocity;
+    // Moves the sprite up for 150ms when space is pressed
     if(spacePressed){
-        birdY -= 9;
+        spriteY -= 9;
     }
 }
 
 function holeYGen() {
-    let min = 100+HOLE_HEIGHT;
-    let max = GAME_HEIGHT-100-HOLE_HEIGHT;
-    // Gives a random number between 100 and GAME_HEIGHT-100
+    let min = 50+HOLE_HEIGHT;
+    let max = GAME_HEIGHT-50-HOLE_HEIGHT;
+    // Gives a random number between 50 and GAME_HEIGHT-50
     random =  Math.floor(Math.random() * (max - min) + min);
     return random
+}
+
+const gameOver = () =>{
+    gameOn = false;
+}
+
+const collisionCheck = () => {
+    if(spriteY <= 0 + radius || spriteY >= GAME_HEIGHT - radius){
+        // If the sprite collides with top or bottom wall
+        gameOver();
+    }
+
+    // Collision with Pipe 1
+    if(spriteX >= pipe1X-radius  && spriteX <= pipe1X+PIPE_WIDTH+radius){
+        if(spriteY+radius < hole1Y || spriteY-radius > hole1Y+HOLE_HEIGHT){
+            gameOver();
+        }
+        else{
+            score++;
+        }
+    }
+
+    // Collision with Pipe 2
+    if(spriteX >= pipe2X-radius  && spriteX <= pipe2X+PIPE_WIDTH+radius){
+        if(spriteY+radius < hole2Y || spriteY-radius > hole2Y+HOLE_HEIGHT){
+            gameOver();
+        }
+        else{
+            score++;
+        }
+    }
+
+    // Collision with Pipe 3
+    if(spriteX >= pipe3X-radius  && spriteX <= pipe3X+PIPE_WIDTH+radius){
+        if(spriteY+radius < hole3Y || spriteY-radius > hole3Y+HOLE_HEIGHT){
+            gameOver();
+        }
+        else{
+            score++;
+        }
+    }
+
+    // Collision with Pipe 4
+    if(spriteX >= pipe4X-radius  && spriteX <= pipe4X+PIPE_WIDTH+radius){
+        if(spriteY+radius < hole4Y || spriteY-radius > hole4Y+HOLE_HEIGHT){
+            gameOver();
+        }
+        else{
+            score++;
+        }
+    }
+    
 }
 
 const incrementElapsedTime = () => {
     // This increments the timeElapsed variable such that the velocity increases with time
     setInterval(()=>{
         timeElapsed += 0.1;
-        ballVelocity = BALL_ACCELERATION*timeElapsed;
+        spriteVelocity = SPRITE_ACCELERATION*timeElapsed;
     },1000/FPS)
 }
 
 
 const gameLoop = () =>{
     // Main Game Loop
-    moveEverything();
-    drawEverything();
+    if(gameOn){
+        moveEverything();
+        drawEverything();
+        collisionCheck();
+    }
 }
 
 
@@ -126,7 +192,7 @@ window.onload = () => {
     ctx = canvas.getContext('2d');
 
     document.addEventListener('keydown', evt =>{
-        // When space is pressed, this sets the value of spacePressed to be true for 150ms. So, the bird will go up for 150ms
+        // When space is pressed, this sets the value of spacePressed to be true for 150ms. So, the sprite will go up for 150ms
         if(evt.key == " "){
             spacePressed = true;
             setTimeout(()=>{
@@ -138,7 +204,7 @@ window.onload = () => {
     })
 
     document.addEventListener('click', evt =>{
-        // When space is pressed, this sets the value of spacePressed to be true for 150ms. So, the bird will go up for 150ms
+        // When space is pressed, this sets the value of spacePressed to be true for 150ms. So, the sprite will go up for 150ms
             spacePressed = true;
             setTimeout(()=>{
                 spacePressed = false;

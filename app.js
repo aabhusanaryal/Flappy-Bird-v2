@@ -136,6 +136,17 @@ window.onload = () => {
             timeElapsed = 1;
         }
     })
+
+    document.addEventListener('click', evt =>{
+        // When space is pressed, this sets the value of spacePressed to be true for 150ms. So, the bird will go up for 150ms
+            spacePressed = true;
+            setTimeout(()=>{
+                spacePressed = false;
+            }, 150)
+            // Reset elapsed time
+            timeElapsed = 1;
+        
+    })
     
     incrementElapsedTime();
     // Game Loop

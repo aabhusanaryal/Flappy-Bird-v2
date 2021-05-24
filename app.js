@@ -1,5 +1,5 @@
-const GAME_WIDTH = 700;
-const GAME_HEIGHT = 500;
+let GAME_WIDTH = 450;
+let GAME_HEIGHT = 550;
 const SKY_COLOR = "#71c5cf";
 const PIPE_COLOR = "#049e14";
 const BIRD_COLOR = "#d4c029";
@@ -159,7 +159,7 @@ const collisionCheck = () => {
 
     // Collision with Pipe 1
     if(spriteX >= pipe1X-radius  && spriteX <= pipe1X+PIPE_WIDTH+radius){
-        if(spriteY+radius < hole1Y || spriteY-radius > hole1Y+HOLE_HEIGHT){
+        if(spriteY < hole1Y+radius || spriteY+radius > hole1Y+HOLE_HEIGHT){
             gameOver();
         }
         else{
@@ -169,7 +169,7 @@ const collisionCheck = () => {
 
     // Collision with Pipe 2
     if(spriteX >= pipe2X-radius  && spriteX <= pipe2X+PIPE_WIDTH+radius){
-        if(spriteY+radius < hole2Y || spriteY-radius > hole2Y+HOLE_HEIGHT){
+        if(spriteY+radius < hole2Y+radius || spriteY+radius > hole2Y+HOLE_HEIGHT){
             gameOver();
         }
         else{
@@ -179,7 +179,7 @@ const collisionCheck = () => {
 
     // Collision with Pipe 3
     if(spriteX >= pipe3X-radius  && spriteX <= pipe3X+PIPE_WIDTH+radius){
-        if(spriteY+radius < hole3Y || spriteY-radius > hole3Y+HOLE_HEIGHT){
+        if(spriteY+radius < hole3Y+radius || spriteY+radius > hole3Y+HOLE_HEIGHT){
             gameOver();
         }
         else{
@@ -189,7 +189,7 @@ const collisionCheck = () => {
 
     // Collision with Pipe 4
     if(spriteX >= pipe4X-radius  && spriteX <= pipe4X+PIPE_WIDTH+radius){
-        if(spriteY+radius < hole4Y || spriteY-radius > hole4Y+HOLE_HEIGHT){
+        if(spriteY+radius < hole4Y+radius || spriteY+radius > hole4Y+HOLE_HEIGHT){
             gameOver();
         }
         else{

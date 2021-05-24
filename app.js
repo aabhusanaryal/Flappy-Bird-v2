@@ -1,18 +1,19 @@
 const GAME_WIDTH = 700;
 const GAME_HEIGHT = 500;
-const SKY_COLOR = "#74add6";
-const PIPE_COLOR = "#529c5d";
+const SKY_COLOR = "#71c5cf";
+const PIPE_COLOR = "#049e14";
+const BIRD_COLOR = "#d4c029";
 const PIPE_WIDTH = 40;
 const HOLE_HEIGHT = 110;
 const FPS = 60;
 
-const SPRITE_ACCELERATION = 1.2;
+const SPRITE_ACCELERATION = 1.4;
 let timeElapsed = 1;
 let spriteVelocity = SPRITE_ACCELERATION*timeElapsed;
 let score = 0;
 
 const PIPE_VELOCITY = 5;
-const PIPE_SEPARATION = 350;
+const PIPE_SEPARATION = 270;
 
 let pipe1X = 500;
 let pipe2X = pipe1X + PIPE_SEPARATION;
@@ -70,13 +71,13 @@ const drawEverything = () =>{
     // Making main character
     ctx.beginPath();
     ctx.arc(spriteX, spriteY, radius, 0, 2 * Math.PI, false);
-    ctx.fillStyle = '#bed93b';
+    ctx.fillStyle = BIRD_COLOR;
     ctx.fill();
 
     // Scoreboard
     ctx.fillStyle = 'white';
-    ctx.font = "30px Arial"
-    ctx.fillText(score/15, canvas.width / 2, 50)
+    ctx.font = "30px Arial";
+    ctx.fillText(Math.floor(score/15), canvas.width / 2, 50);
 }
 
 const moveEverything = () => {
@@ -115,9 +116,40 @@ function holeYGen() {
     return random
 }
 
+const newGame = (evt) =>{
+    if(evt.key == " "){
+        score = 0;
+        gameOn = true;
+        pipe1X = 500;
+        pipe2X = pipe1X + PIPE_SEPARATION;
+        pipe3X = pipe2X + PIPE_SEPARATION;
+        pipe4X = pipe3X + PIPE_SEPARATION;
+
+        spriteX = 80;
+        spriteY = GAME_HEIGHT/2;
+
+        document.removeEventListener('keydown', newGame)
+    }
+}
+
 const gameOver = () =>{
     gameOn = false;
+    ctx.fillStyle = 'white';
+
+    // GAME OVER text
+    ctx.font = "80px Arial";
+    ctx.textAlign = 'center';
+    ctx.fillText("Game Over", canvas.width / 2, canvas.height/2);
+    document.addEventListener('keydown', newGame);
+
+    // PLAY AGAIN text
+    ctx.font = "20px Arial";
+    ctx.textAlign = 'center';
+    ctx.fillText("Press spacebar to play again.", canvas.width / 2, canvas.height/2+50);
+    document.addEventListener('keydown', newGame);
 }
+    
+
 
 const collisionCheck = () => {
     if(spriteY <= 0 + radius || spriteY >= GAME_HEIGHT - radius){

@@ -1,10 +1,12 @@
 let GAME_WIDTH = 450;
-let GAME_HEIGHT = 550;
+let GAME_HEIGHT = 500;
+let PIPE_WIDTH = 40;
+let HOLE_HEIGHT = 110;
+let PIPE_SEPARATION = 270;
+
 const SKY_COLOR = "#71c5cf";
 const PIPE_COLOR = "#049e14";
 const BIRD_COLOR = "#d4c029";
-const PIPE_WIDTH = 40;
-const HOLE_HEIGHT = 110;
 const FPS = 60;
 
 const SPRITE_ACCELERATION = 1.4;
@@ -13,7 +15,6 @@ let spriteVelocity = SPRITE_ACCELERATION*timeElapsed;
 let score = 0;
 
 const PIPE_VELOCITY = 5;
-const PIPE_SEPARATION = 270;
 
 let pipe1X = 500;
 let pipe2X = pipe1X + PIPE_SEPARATION;
@@ -25,7 +26,7 @@ let spriteY = GAME_HEIGHT/2;
 let radius = 15;
 
 let spacePressed;
-let gameOn = true;
+let gameOn = false;
 
 let hole1Y, hole2Y, hole3Y, hole4Y;
 hole1Y = holeYGen();
@@ -69,10 +70,21 @@ const drawEverything = () =>{
     ctx.fillRect(pipe4X, hole4Y, PIPE_WIDTH, HOLE_HEIGHT); // Pipe4's hole
 
     // Making main character
-    ctx.beginPath();
-    ctx.arc(spriteX, spriteY, radius, 0, 2 * Math.PI, false);
-    ctx.fillStyle = BIRD_COLOR;
-    ctx.fill();
+        // Yellow Body
+        ctx.beginPath();
+        ctx.arc(spriteX, spriteY, radius, 0, 2 * Math.PI, false);
+        ctx.fillStyle = BIRD_COLOR;
+        ctx.fill();
+        // Eye
+        ctx.beginPath();
+        ctx.arc(spriteX+radius/2, spriteY-radius/4, radius/8, 0, 2 * Math.PI, false);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        // Lips
+        ctx.beginPath();
+        ctx.arc(spriteX+radius, spriteY, radius/8, 0, 2 * Math.PI, false);
+        ctx.fillStyle = "red";
+        ctx.fill();
 
     // Scoreboard
     ctx.fillStyle = 'white';
@@ -127,8 +139,7 @@ const newGame = (evt) =>{
 
         spriteX = 80;
         spriteY = GAME_HEIGHT/2;
-
-        document.removeEventListener('keydown', newGame)
+        document.removeEventListener('keydown', newGame);
     }
 }
 
@@ -148,7 +159,20 @@ const gameOver = () =>{
     ctx.fillText("Press spacebar to play again.", canvas.width / 2, canvas.height/2+50);
     document.addEventListener('keydown', newGame);
 }
-    
+
+const setupGame = (easyMode) => {
+    gameOn = true;
+    document.querySelector('#easy').style.display = 'none';
+    document.querySelector('#difficult').style.display = 'none';
+
+    if(easyMode){
+        GAME_WIDTH = 700;
+        GAME_HEIGHT = 500;
+        PIPE_WIDTH = 40;
+        HOLE_HEIGHT = 125;
+        PIPE_SEPARATION = 270;
+    }
+}
 
 
 const collisionCheck = () => {
@@ -222,6 +246,7 @@ const gameLoop = () =>{
 window.onload = () => {
     canvas = document.querySelector('canvas');
     ctx = canvas.getContext('2d');
+    
 
     document.addEventListener('keydown', evt =>{
         // When space is pressed, this sets the value of spacePressed to be true for 150ms. So, the sprite will go up for 150ms
